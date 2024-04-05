@@ -10,14 +10,19 @@ import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import java.util.Collection;
 import java.util.ServiceLoader;
 
+
 import static java.util.stream.Collectors.toList;
+
+
+
 
 
 public class PlayerControlSystem implements IEntityProcessingService {
 
+
     @Override
     public void process(GameData gameData, World world) {
-            
+
         for (Entity player : world.getEntities(Player.class)) {
             if (gameData.getKeys().isDown(GameKeys.LEFT)) {
                 player.setRotation(player.getRotation() - 5);                
@@ -30,9 +35,30 @@ public class PlayerControlSystem implements IEntityProcessingService {
                 double changeY = Math.sin(Math.toRadians(player.getRotation()));
                 player.setX(player.getX() + changeX);
                 player.setY(player.getY() + changeY);
+
             }
-            
-        if (player.getX() < 0) {
+            if (gameData.getKeys().isDown(GameKeys.DOWN)) {
+                double changeX = Math.cos(Math.toRadians(player.getRotation()));
+                double changeY = Math.sin(Math.toRadians(player.getRotation()));
+                player.setX(player.getX() - changeX);
+                player.setY(player.getY() - changeY);
+
+            }
+
+
+            if (gameData.getKeys().isDown(GameKeys.SPACE)) {
+                    getBulletSPIs().stream().findFirst().ifPresent(shoot -> {
+                        world.addEntity(shoot.createBullet(player, gameData));
+
+                    });
+
+            }
+
+
+
+
+
+            if (player.getX() < 0) {
             player.setX(1);
         }
 
@@ -47,7 +73,7 @@ public class PlayerControlSystem implements IEntityProcessingService {
         if (player.getY() > gameData.getDisplayHeight()) {
             player.setY(gameData.getDisplayHeight()-1);
         }
-            
+
                                         
         }
     }
