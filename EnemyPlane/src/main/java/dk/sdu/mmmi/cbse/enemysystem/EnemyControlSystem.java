@@ -12,17 +12,20 @@ import static java.util.stream.Collectors.toList;
 
 public class EnemyControlSystem implements IEntityProcessingService {
     private final Random random = new Random();
-    private double speed = 1.0;
+    private double speed = 0.8;
 
-    // Cooldown management with individual tracking
-    private final Map<Entity, Long> lastShotTimes = new HashMap<>();
-    private final long shootCooldown = 10000; // 10 seconds in milliseconds
 
 
 
     @Override
     public void process(GameData gameData, World world) {
-        long currentTime = System.currentTimeMillis();
+
+
+        if (world.getEntities(Enemy.class).stream()
+                .count() <= 1) {
+            world.addEntity(createEnemyShip(gameData));
+            System.out.println("Spawning Enemy");
+        }
 
 
         for (Entity enemy : world.getEntities(Enemy.class)) {
@@ -58,28 +61,54 @@ public class EnemyControlSystem implements IEntityProcessingService {
             }
 
 
-            // Initialize or check cooldown for shooting
-            //Not working atm it goes machine gun fire
 
-            lastShotTimes.putIfAbsent(enemy, 0L); // Initialize if not present
-            if (currentTime - lastShotTimes.get(enemy) > shootCooldown) {
-
-
-                getBulletSPIs().stream().findFirst().ifPresent(shoot -> {
-                    world.addEntity(shoot.createBullet(enemy, gameData));
-
-                    lastShotTimes.put(enemy, currentTime); // Reset the cooldown timer for this enemy
-                    System.out.println("Current Time: " + currentTime);
-                    System.out.println("Last Shot for Enemy: " + lastShotTimes.get(enemy));
-                    System.out.println("Time Since Last Shot: " + (currentTime - lastShotTimes.get(enemy)));
-                    System.out.println("Cooldown: " + shootCooldown);
-
-                });
+            //Shooting logic, simple random function
+            if (Math.random() > 0.99){
+                for (BulletSPI bulletSPI : getBulletSPIs()){
+                    Entity bullet = bulletSPI.createBullet(enemy,gameData);
+                    world.addEntity(bullet);
+                    world.addEntity(bullet);
+                }
             }
 
-             
         }
+
     }
+    public Entity createEnemyShip(GameData gameData) {
+        Random random = new Random();
+        Entity enemy = new Enemy();
+        enemy.setPolygonCoordinates(-5, -5, 10, 0, -5, 5);
+        enemy.setRadius(4);
+        enemy.setType("Enemy");
+
+
+
+        // Randomly decide which edge to spawn the enemy
+        int edge = random.nextInt(4); // Returns an integer between 0 and 3
+
+        switch (edge) {
+            case 0: // Top edge
+                enemy.setX(random.nextInt(gameData.getDisplayWidth()));
+                enemy.setY(gameData.getDisplayHeight());
+                break;
+            case 1: // Bottom edge
+                enemy.setX(random.nextInt(gameData.getDisplayWidth()));
+                enemy.setY(0);
+                break;
+            case 2: // Left edge
+                enemy.setX(0);
+                enemy.setY(random.nextInt(gameData.getDisplayHeight()));
+                break;
+            case 3: // Right edge
+                enemy.setX(gameData.getDisplayWidth());
+                enemy.setY(random.nextInt(gameData.getDisplayHeight()));
+                break;
+        }
+
+        return enemy;
+    }
+
+
 
     private Collection<? extends BulletSPI> getBulletSPIs() {
         return ServiceLoader.load(BulletSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());

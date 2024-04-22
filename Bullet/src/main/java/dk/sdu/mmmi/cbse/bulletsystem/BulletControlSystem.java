@@ -9,18 +9,43 @@ import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 
 public class BulletControlSystem implements IEntityProcessingService, BulletSPI {
 
+    double speedFactor = 2.0; // Adjust this value to set the desired speed
+
     @Override
     public void process(GameData gameData, World world) {
 
+
         for (Entity bullet : world.getEntities(Bullet.class)) {
-            double changeX = Math.cos(Math.toRadians(bullet.getRotation()));
-            double changeY = Math.sin(Math.toRadians(bullet.getRotation()));
-            bullet.setX(bullet.getX() + changeX * 3);
-            bullet.setY(bullet.getY() + changeY * 3);
+            double changeX = Math.cos(Math.toRadians(bullet.getRotation())) * speedFactor;
+            double changeY = Math.sin(Math.toRadians(bullet.getRotation())) * speedFactor;
+            bullet.setX(bullet.getX() + changeX);
+            bullet.setY(bullet.getY() + changeY);
+
+
+            if (bullet.getX() > gameData.getDisplayWidth() ||
+                    bullet.getX() + gameData.getDisplayWidth() < gameData.getDisplayWidth() ||
+                    bullet.getY() > gameData.getDisplayHeight() ||
+                    bullet.getY() + gameData.getDisplayHeight() < gameData.getDisplayHeight()) {
+                world.removeEntity(bullet);
+
+
+            }
 
         }
-    }
 
+
+
+
+
+
+
+
+
+
+
+
+
+    }
     @Override
     public Entity createBullet(Entity shooter, GameData gameData) {
         Entity bullet = new Bullet();
@@ -31,17 +56,12 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI 
         bullet.setX(shooter.getX() + changeX * 10);
         bullet.setY(shooter.getY() + changeY * 10);
         bullet.setRotation(shooter.getRotation());
-        bullet.setDuration(10);
-        bullet.setRadius(1);
+        bullet.setRadius(2);
+        bullet.setType("Bullet");
 
 
         return bullet;
     }
-
-
-
-
-
 
 
 }

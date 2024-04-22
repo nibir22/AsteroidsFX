@@ -7,7 +7,6 @@ import dk.sdu.mmmi.cbse.common.data.World;
 
 
 public class CollisionDetector implements IPostEntityProcessingService {
-
     public CollisionDetector() {
     }
 
@@ -17,18 +16,23 @@ public class CollisionDetector implements IPostEntityProcessingService {
         for (Entity entity1 : world.getEntities()) {
             for (Entity entity2 : world.getEntities()) {
 
-                // if the two entities are identical, skip the iteration
-                if (entity1.getID().equals(entity2.getID())) {
-                    continue;
-                }
+                if (entity1.getType() == entity2.getType()){
+
+
+                    //System.out.println("Continue");
 
 
 
-                // CollisionDetection
-                if (this.collides(entity1, entity2)) {
+
+                } else if (this.collides(entity1,entity2)){
                     world.removeEntity(entity1);
                     world.removeEntity(entity2);
+                    System.out.println("Collision occured");
+                    System.out.println(entity1.getType());
+
                 }
+
+
             }
         }
 

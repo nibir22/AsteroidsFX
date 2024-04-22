@@ -13,18 +13,17 @@ public class Entity implements Serializable {
     private double rotation;
     private float radius;
 
-    private int duration;
+    private String type;
+    private double velocityX;
+    private double velocityY;
 
-
-
-    public int setDuration(int duration){
-        return duration;
-
-    }
-    public int getDuration() {
-        return duration;
+    public String getType(){
+        return type;
     }
 
+    public void setType(String type){
+        this.type=type;
+    }
     public String getID() {
         return ID.toString();
 
@@ -72,4 +71,14 @@ public class Entity implements Serializable {
     public float getRadius() {
         return this.radius;
     }
+
+    public double getVelocityX() {return velocityX;}
+
+    public void setVelocityX(double velocityX) {this.velocityX = velocityX;}
+
+    public double getVelocityY() {return velocityY;}
+
+    public void setVelocityY(double velocityY) {this.velocityY = velocityY;}
+
+
 }

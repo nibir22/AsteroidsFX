@@ -7,10 +7,8 @@ import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
+
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import static java.util.stream.Collectors.toList;
 import javafx.animation.AnimationTimer;
@@ -53,7 +51,11 @@ public class Main extends Application {
             if (event.getCode().equals(KeyCode.SPACE)) {
                 gameData.getKeys().setKey(GameKeys.SPACE, true);
             }
+            if (event.getCode().equals(KeyCode.DOWN)) {
+                gameData.getKeys().setKey(GameKeys.DOWN, true);
+            }
         });
+
         scene.setOnKeyReleased(event -> {
             if (event.getCode().equals(KeyCode.LEFT)) {
                 gameData.getKeys().setKey(GameKeys.LEFT, false);
@@ -67,6 +69,9 @@ public class Main extends Application {
             if (event.getCode().equals(KeyCode.SPACE)) {
                 gameData.getKeys().setKey(GameKeys.SPACE, false);
             }
+            if (event.getCode().equals(KeyCode.DOWN)) {
+                gameData.getKeys().setKey(GameKeys.DOWN, false);
+            }
 
         });
 
@@ -78,6 +83,8 @@ public class Main extends Application {
             Polygon polygon = new Polygon(entity.getPolygonCoordinates());
             polygons.put(entity, polygon);
             gameWindow.getChildren().add(polygon);
+
+
         }
         render();
         window.setScene(scene);
@@ -104,9 +111,12 @@ public class Main extends Application {
         for (IPostEntityProcessingService postEntityProcessorService : getPostEntityProcessingServices()) {
             postEntityProcessorService.process(gameData, world);
         }
+
     }
 
     private void draw() {
+
+
         for (Entity polygonEntity : polygons.keySet()) {
             if(!world.getEntities().contains(polygonEntity)){
                 Polygon removedPolygon = polygons.get(polygonEntity);
@@ -114,6 +124,9 @@ public class Main extends Application {
                 gameWindow.getChildren().remove(removedPolygon);
             }
         }
+
+
+
 
         for (Entity entity : world.getEntities()) {
             Polygon polygon = polygons.get(entity);
@@ -125,7 +138,31 @@ public class Main extends Application {
             polygon.setTranslateX(entity.getX());
             polygon.setTranslateY(entity.getY());
             polygon.setRotate(entity.getRotation());
+
+            //Old entity remover if entity was out of displaywidth/height
+            /*
+            if (entity.getX()>gameData.getDisplayWidth() || entity.getY()>gameData.getDisplayHeight() || entity.getX() < 0 || entity.getY() <0){
+
+                if (polygon != null){
+                    gameWindow.getChildren().remove(polygon);
+
+                }
+                world.removeEntity(entity);
+
+            }
+
+             */
+
+
+
+
+
+
+
+
+
         }
+
 
     }
 
