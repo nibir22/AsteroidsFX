@@ -7,6 +7,7 @@ import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 
+
 import java.util.Random;
 
 public class AsteroidProcessor implements IEntityProcessingService {
@@ -18,39 +19,41 @@ public class AsteroidProcessor implements IEntityProcessingService {
     @Override
     public void process(GameData gameData, World world) {
 
-        if (world.getEntities(Asteroid.class).stream()
-                .count() <= 5) {
-            System.out.println("Spawning asteroid");
-            world.addEntity(createAsteroid(gameData));
-        }
-
-
 
         for (Entity asteroid : world.getEntities(Asteroid.class)) {
-            double changeX = Math.cos(Math.toRadians(asteroid.getRotation()));
-            double changeY = Math.sin(Math.toRadians(asteroid.getRotation()));
-
-            // Update the position of the asteroid
-            asteroid.setX(asteroid.getX() + changeX * 0.5);
-            asteroid.setY(asteroid.getY() + changeY * 0.5);
-
-            // Check if the asteroid hits the horizontal boundaries
-            if (asteroid.getX() <= 0 || asteroid.getX() >= gameData.getDisplayWidth()) {
-                // Reverse the horizontal direction by changing the rotation
-                asteroid.setRotation(180 - asteroid.getRotation());
+            if (asteroid.isHit() == true) {
+                asteroidSplitter.createSplitAsteroid(asteroid, world);
+                world.removeEntity(asteroid);
+                //For testing
+                //System.out.println("Asteroid hit");
+                continue;
             }
 
-            // Check if the asteroid hits the vertical boundaries
-            if (asteroid.getY() <= 0 || asteroid.getY() >= gameData.getDisplayHeight()) {
-                // Reverse the vertical direction by changing the rotation
-                asteroid.setRotation(-asteroid.getRotation());
-            }
+                //Movement
+                double changeX = Math.cos(Math.toRadians(asteroid.getRotation()));
+                double changeY = Math.sin(Math.toRadians(asteroid.getRotation()));
+                // Update the position of the asteroid
+                asteroid.setX(asteroid.getX() + changeX * 0.5);
+                asteroid.setY(asteroid.getY() + changeY * 0.5);
+                // Check if the asteroid hits the horizontal boundaries
+                if (asteroid.getX() <= 0 || asteroid.getX() >= gameData.getDisplayWidth()) {
+                    // Reverse the horizontal direction by changing the rotation
+                    asteroid.setRotation(180 - asteroid.getRotation());
+                }
+                // Check if the asteroid hits the vertical boundaries
+                if (asteroid.getY() <= 0 || asteroid.getY() >= gameData.getDisplayHeight()) {
+                    // Reverse the vertical direction by changing the rotation
+                    asteroid.setRotation(-asteroid.getRotation());
+                }
+
         }
 
-
-
-
-
+        //Asteroid spawner, if less than 5 asteroids, spawn a new one
+        if (world.getEntities(Asteroid.class).stream()
+                .count() <= 10) {
+            //System.out.println("Spawning asteroid");
+            world.addEntity(createAsteroid(gameData));
+        }
 
 
     }
@@ -66,8 +69,6 @@ public class AsteroidProcessor implements IEntityProcessingService {
         asteroid.setType("Asteroid");
         return asteroid;
     }
-
-
 
     public void asteroidSpawnLocation(Entity asteroid, GameData gameData) {
         int asteroidSpawnX = random.nextInt(gameData.getDisplayWidth());
@@ -95,6 +96,9 @@ public class AsteroidProcessor implements IEntityProcessingService {
                 asteroid.setRotation(180 + random.nextInt(180));  // Move leftward
             }
         }
+
+
+
     }
 
 

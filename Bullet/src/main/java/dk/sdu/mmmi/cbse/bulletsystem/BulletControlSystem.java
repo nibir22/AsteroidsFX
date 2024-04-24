@@ -9,7 +9,9 @@ import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 
 public class BulletControlSystem implements IEntityProcessingService, BulletSPI {
 
-    double speedFactor = 2.0; // Adjust this value to set the desired speed
+
+    // Value that determines the speed of the bullet
+    double speedFactor = 2.0;
 
     @Override
     public void process(GameData gameData, World world) {
@@ -21,30 +23,19 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI 
             bullet.setX(bullet.getX() + changeX);
             bullet.setY(bullet.getY() + changeY);
 
+            //New update who this
+            if (bullet.isHit()== true){
+                world.removeEntity(bullet);
+            }
+
 
             if (bullet.getX() > gameData.getDisplayWidth() ||
                     bullet.getX() + gameData.getDisplayWidth() < gameData.getDisplayWidth() ||
                     bullet.getY() > gameData.getDisplayHeight() ||
                     bullet.getY() + gameData.getDisplayHeight() < gameData.getDisplayHeight()) {
                 world.removeEntity(bullet);
-
-
             }
-
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
     @Override
     public Entity createBullet(Entity shooter, GameData gameData) {

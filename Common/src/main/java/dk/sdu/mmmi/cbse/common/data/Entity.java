@@ -14,8 +14,19 @@ public class Entity implements Serializable {
     private float radius;
 
     private String type;
+
+    private boolean isHit = false;
     private double velocityX;
     private double velocityY;
+
+
+    public boolean isHit() {
+        return isHit;
+    }
+
+    public void setHit(boolean hit) {
+        isHit = hit;
+    }
 
     public String getType(){
         return type;

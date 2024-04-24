@@ -21,14 +21,21 @@ public class EnemyControlSystem implements IEntityProcessingService {
     public void process(GameData gameData, World world) {
 
 
+
+
         if (world.getEntities(Enemy.class).stream()
                 .count() <= 1) {
             world.addEntity(createEnemyShip(gameData));
-            System.out.println("Spawning Enemy");
+
         }
 
 
         for (Entity enemy : world.getEntities(Enemy.class)) {
+            //New update who this
+            if (enemy.isHit() == true) {
+                world.removeEntity(enemy);
+                continue;
+            }
 
 
             // Adjust speed randomly within a range
