@@ -22,7 +22,12 @@ public class AsteroidProcessor implements IEntityProcessingService {
 
         for (Entity asteroid : world.getEntities(Asteroid.class)) {
             if (asteroid.isHit() == true) {
+                Random random = new Random();
                 asteroidSplitter.createSplitAsteroid(asteroid, world);
+
+                asteroidSplitter.createSplitAsteroid(asteroid, world);
+
+
                 world.removeEntity(asteroid);
                 //For testing
                 //System.out.println("Asteroid hit");
@@ -48,7 +53,7 @@ public class AsteroidProcessor implements IEntityProcessingService {
 
         }
 
-        //Asteroid spawner, if less than 5 asteroids, spawn a new one
+        //Asteroid spawner, if less than x asteroids, spawn a new one
         if (world.getEntities(Asteroid.class).stream()
                 .count() <= 10) {
             //System.out.println("Spawning asteroid");
@@ -63,10 +68,11 @@ public class AsteroidProcessor implements IEntityProcessingService {
         Random rnd = new Random();
         int size = rnd.nextInt(20) + 5;
         asteroid.setPolygonCoordinates(size, -size, -size, -size, -size, size, size, size);
-        asteroid.setRadius(size);
+        asteroid.setRadius(size + 5);
         asteroid.setRotation(rnd.nextInt(90));
         asteroidSpawnLocation(asteroid,gameData);
         asteroid.setType("Asteroid");
+        asteroid.setHealth(1);
         return asteroid;
     }
 

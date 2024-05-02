@@ -18,7 +18,15 @@ public class Entity implements Serializable {
     private boolean isHit = false;
     private double velocityX;
     private double velocityY;
+    private int health;
 
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
 
     public boolean isHit() {
         return isHit;

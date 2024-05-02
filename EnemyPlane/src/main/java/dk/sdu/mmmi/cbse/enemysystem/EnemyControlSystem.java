@@ -86,6 +86,7 @@ public class EnemyControlSystem implements IEntityProcessingService {
         Entity enemy = new Enemy();
         enemy.setPolygonCoordinates(-5, -5, 10, 0, -5, 5);
         enemy.setRadius(4);
+        enemy.setHealth(4);
         enemy.setType("Enemy");
 
 

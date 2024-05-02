@@ -1,9 +1,10 @@
 package dk.sdu.mmmi.cbse.collisionsystem;
-
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class CollisionDetector implements IPostEntityProcessingService {
@@ -19,34 +20,41 @@ public class CollisionDetector implements IPostEntityProcessingService {
                 if (entity2.getID().equals(entity1.getID())){
 
                     continue;
-
-
                     //System.out.println("Continue");
-
 
                 }
                 if (this.collides(entity1,entity2)){
-                    // Kinda works
-                    /*
-                    if (entity1.getType().equals("Bullet") && entity2.getType().equals("Bullet")){
-                        world.removeEntity(entity1);
-                        world.removeEntity(entity2);
-                    } if (entity1.getType().equals("Enemy") && entity2.getType().equals("Bullet") || entity1.getType().equals("Bullet") && entity2.getType().equals("Enemy")){
-                        world.removeEntity(entity1);
-                        world.removeEntity(entity2);
+                    if (entity1.getType().equals("SplitAsteroid") && entity2.getType().equals("SplitAsteroid")){
+                        // Create a timer task to change the type after 5 seconds
+                        TimerTask task = new TimerTask() {
+                            @Override
+                            public void run() {
+                                entity1.setType("Asteroid");
+                                entity2.setType("Asteroid");
+                            }
+                        };
 
-                    } if (entity1.getType().equals("Player") && entity2.getType().equals("Enemy") || entity1.getType().equals("Enemy") && entity2.getType().equals("Player")){
-                        world.removeEntity(entity1);
-                        world.removeEntity(entity2);
-                    } if (entity1.getType().equals("Enemy") && entity2.getType().equals("Asteroids")){
-                        world.removeEntity(entity1);
-                    } if (entity1.getType().equals("Asteroids") && entity2.getType().equals("Enemy")) {
-                        world.removeEntity(entity2);
+                        // Schedule the task
+                        Timer timer = new Timer();
+                        timer.schedule(task, 2000); //Wait 5 seconds then change the type back to asteroid
+
+                        continue;
                     }
-                     */
+                    if (!entity1.isHit()) {
+                        entity1.setHealth(entity1.getHealth() - 1);
+                        if (entity1.getHealth() == 0){
+                            entity1.setHit(true);
+                        }
+                    }
 
-                    entity1.setHit(true);
-                    entity2.setHit(true);
+                    if (!entity2.isHit()) {
+                        entity2.setHealth(entity2.getHealth() - 1);
+                        if (entity2.getHealth() == 0){
+                            entity2.setHit(true);
+                        }
+                    }
+
+
                     //Testing hours
                     /*
                     System.out.println("Collision detected: " + entity1.getType() + " with " + entity2.getType());
