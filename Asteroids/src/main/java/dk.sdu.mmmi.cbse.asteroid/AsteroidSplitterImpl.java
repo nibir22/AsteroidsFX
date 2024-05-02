@@ -20,11 +20,8 @@ public class AsteroidSplitterImpl implements IAsteroidSplitter {
     public void createSplitAsteroid(Entity e, World world) {
 
         if (e.getRadius()/2 > 5) world.addEntity(createSmallerAsteroid(e));
-
-
-
-
         //System.out.println("Asteroid split, Smaller spawned");
+
 
         }
 
@@ -35,8 +32,8 @@ public class AsteroidSplitterImpl implements IAsteroidSplitter {
             Random random = new Random();
             double size = random.nextDouble(5,(entity.getRadius()/2));
             asteroid.setPolygonCoordinates(size,-size,-size,-size,-size,size,size,size);
-            asteroid.setX(entity.getX() + random.nextInt(10 *2));
-            asteroid.setY(entity.getY() + (random.nextInt((10)*2)));
+            asteroid.setX(entity.getX());
+            asteroid.setY(entity.getY());
             asteroid.setRadius((float) size);
             asteroid.setRotation(random.nextInt(90));
             asteroid.setType("SplitAsteroid");
