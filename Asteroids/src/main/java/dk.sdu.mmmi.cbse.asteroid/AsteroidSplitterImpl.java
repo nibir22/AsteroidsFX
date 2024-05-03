@@ -37,7 +37,7 @@ public class AsteroidSplitterImpl implements IAsteroidSplitter {
             asteroid.setRadius((float) size);
             asteroid.setRotation(random.nextInt(90));
             asteroid.setType("SplitAsteroid");
-            asteroid.setHealth(1);
+
 
             return asteroid;
 

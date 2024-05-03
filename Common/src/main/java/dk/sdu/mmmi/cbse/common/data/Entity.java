@@ -18,7 +18,7 @@ public class Entity implements Serializable {
     private boolean isHit = false;
     private double velocityX;
     private double velocityY;
-    private int health;
+    private int health = 1;
 
     public int getHealth() {
         return health;

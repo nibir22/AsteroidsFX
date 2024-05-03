@@ -72,7 +72,6 @@ public class AsteroidProcessor implements IEntityProcessingService {
         asteroid.setRotation(rnd.nextInt(90));
         asteroidSpawnLocation(asteroid,gameData);
         asteroid.setType("Asteroid");
-        asteroid.setHealth(1);
         return asteroid;
     }
 
@@ -106,8 +105,6 @@ public class AsteroidProcessor implements IEntityProcessingService {
 
 
     }
-
-
 
     /**
      * Dependency Injection using OSGi Declarative Services
