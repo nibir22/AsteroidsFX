@@ -25,19 +25,6 @@ public class CollisionDetector implements IPostEntityProcessingService {
                 }
                 if (this.collides(entity1,entity2)){
                     if (entity1.getType().equals("SplitAsteroid") && entity2.getType().equals("SplitAsteroid")){
-                        // Create a timer task to change the type after x seconds
-                        TimerTask task = new TimerTask() {
-                            @Override
-                            public void run() {
-                                entity1.setType("Asteroid");
-                                entity2.setType("Asteroid");
-                            }
-                        };
-
-                        // Schedule the task
-                        Timer timer = new Timer();
-                        timer.schedule(task, 2000); //Wait x seconds then change the type back to asteroid
-
 
                         continue;
                     }
