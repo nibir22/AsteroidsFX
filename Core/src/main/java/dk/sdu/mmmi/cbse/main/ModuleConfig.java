@@ -21,7 +21,6 @@ import static java.util.stream.Collectors.toList;
  */
 @Configuration
 class ModuleConfig {
-    
     public ModuleConfig() {
     }
 
