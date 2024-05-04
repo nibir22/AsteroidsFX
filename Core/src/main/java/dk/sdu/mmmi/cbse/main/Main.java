@@ -8,6 +8,11 @@ import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import static java.util.stream.Collectors.toList;
@@ -16,6 +21,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -26,16 +32,30 @@ public class Main extends Application {
     private final World world = new World();
     private final Map<Entity, Polygon> polygons = new ConcurrentHashMap<>();
     private final Pane gameWindow = new Pane();
+    private final Text scoreText = new Text("Score: 0");
+
+
+
 
     public static void main(String[] args) {
         launch(Main.class);
     }
 
+
     @Override
     public void start(Stage window) throws Exception {
-        Text text = new Text(10, 20, "Destroyed asteroids: 0");
+
         gameWindow.setPrefSize(gameData.getDisplayWidth(), gameData.getDisplayHeight());
-        gameWindow.getChildren().add(text);
+
+        //Score text
+        gameWindow.getChildren().add(scoreText);
+        VBox vBox = new VBox(5,scoreText);
+        gameWindow.getChildren().add(vBox);
+
+        //Timer for update on score
+        timer.scheduleAtFixedRate(task,0, 1000);
+
+
 
         Scene scene = new Scene(gameWindow);
         scene.setOnKeyPressed(event -> {
@@ -139,24 +159,6 @@ public class Main extends Application {
             polygon.setTranslateY(entity.getY());
             polygon.setRotate(entity.getRotation());
 
-            //Old entity remover if entity was out of displaywidth/height
-            /*
-            if (entity.getX()>gameData.getDisplayWidth() || entity.getY()>gameData.getDisplayHeight() || entity.getX() < 0 || entity.getY() <0){
-
-                if (polygon != null){
-                    gameWindow.getChildren().remove(polygon);
-
-                }
-                world.removeEntity(entity);
-
-            }
-
-             */
-
-
-
-
-
 
 
 
@@ -166,8 +168,34 @@ public class Main extends Application {
 
     }
 
-    //Personlige herunder
-    private Map<IGamePluginService, Long> scheduledTasks = new HashMap<>();
+    //Timer for updating score
+    Timer timer = new Timer();
+    TimerTask task = new TimerTask() {
+        @Override
+        public void run() {
+            updateScoreText();
+
+        }
+    };
+
+        //Method for updating score
+    private void updateScoreText() {
+        System.out.println();
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/score"))
+                .GET().build();
+
+        try {
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            scoreText.setText("Score: " + response.body());
+        } catch (IOException | InterruptedException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+
+
 
 
     private Collection<? extends IGamePluginService> getPluginServices() {

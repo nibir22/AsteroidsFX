@@ -3,13 +3,22 @@ import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
+
+
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.Timer;
 import java.util.TimerTask;
 
 
 public class CollisionDetector implements IPostEntityProcessingService {
 
-    public CollisionDetector() {}
+    HttpClient client = HttpClient.newHttpClient();
+
 
     @Override
     public void process(GameData gameData, World world) {
@@ -24,6 +33,24 @@ public class CollisionDetector implements IPostEntityProcessingService {
 
                 }
                 if (this.collides(entity1,entity2)){
+
+                    //Microservice
+                    int scoreadd =0;
+                    boolean scoreUpdated = false;
+                    if (entity1.getType().equals("Asteroid") && entity2.getType().equals("Bullet")){
+
+                        scoreadd = 10;
+                        scoreUpdated = true;
+                        //System.out.println("Asteroid hit by bullet");
+                    } else {
+                        if (entity1.getType().equals("Bullet") && entity2.getType().equals("SplitAsteroid")){
+
+                            scoreadd = 5;
+                            scoreUpdated = true;
+                            //System.out.println("SplitAsteroid hit by bullet");
+                        }
+                    }
+
                     if (entity1.getType().equals("SplitAsteroid") && entity2.getType().equals("SplitAsteroid")){
 
                         continue;
@@ -32,13 +59,15 @@ public class CollisionDetector implements IPostEntityProcessingService {
                         entity1.setHealth(entity1.getHealth() - 1);
                         if (entity1.getHealth() == 0){
                             entity1.setHit(true);
+
+
                         }
                     }
-
                     if (!entity2.isHit()) {
                         entity2.setHealth(entity2.getHealth() - 1);
                         if (entity2.getHealth() == 0){
                             entity2.setHit(true);
+
                         }
                     }
 
@@ -48,6 +77,21 @@ public class CollisionDetector implements IPostEntityProcessingService {
                     System.out.println("Collision detected: " + entity1.getType() + " with " + entity2.getType());
                     System.out.println(entity1.isHit() + " " + entity2.isHit());
                      */
+
+                    //Microservice
+                    if (scoreUpdated){
+                        HttpRequest request = HttpRequest.newBuilder()
+                                .uri(URI.create("http://localhost:8080/score/update/" + scoreadd))
+                                .PUT(HttpRequest.BodyPublishers.ofString(""))
+                                .build();
+                        try {
+                            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                            System.out.println(response.body());
+                        } catch (IOException | InterruptedException e) {
+                            e.printStackTrace();
+
+                        }
+                    }
                 }
 
 
