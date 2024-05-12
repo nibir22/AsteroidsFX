@@ -11,8 +11,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Timer;
-import java.util.TimerTask;
+
 
 
 public class CollisionDetector implements IPostEntityProcessingService {
@@ -53,7 +52,8 @@ public class CollisionDetector implements IPostEntityProcessingService {
 
                     if (entity1.getType().equals("SplitAsteroid") && entity2.getType().equals("SplitAsteroid")){
 
-                        continue;
+                        world.removeEntity(entity1);
+                        world.removeEntity(entity2);
                     }
                     if (!entity1.isHit()) {
                         entity1.setHealth(entity1.getHealth() - 1);

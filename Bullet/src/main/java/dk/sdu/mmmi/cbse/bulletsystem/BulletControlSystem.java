@@ -11,7 +11,7 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI 
 
 
     // Value that determines the speed of the bullet
-    double speedFactor = 2.0;
+    double speedFactor = 5.0;
 
     @Override
     public void process(GameData gameData, World world) {
@@ -40,7 +40,6 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI 
     @Override
     public Entity createBullet(Entity shooter, GameData gameData) {
         Entity bullet = new Bullet();
-
         bullet.setPolygonCoordinates(1, -1, 1, 1, -1, 1, -1, -1);
         double changeX = Math.cos(Math.toRadians(shooter.getRotation()));
         double changeY = Math.sin(Math.toRadians(shooter.getRotation()));

@@ -19,6 +19,12 @@ public class EnemyControlSystem implements IEntityProcessingService {
 
     @Override
     public void process(GameData gameData, World world) {
+        int Playnespawner = (int)(Math.random()*2000) -10;
+        if (Playnespawner <= 8){
+            world.addEntity(createEnemyShip(gameData));
+            //System.out.println("Enemy spawned");
+        }
+
 
 
 
@@ -34,6 +40,7 @@ public class EnemyControlSystem implements IEntityProcessingService {
             //New update who this
             if (enemy.isHit() == true) {
                 world.removeEntity(enemy);
+
                 continue;
             }
 

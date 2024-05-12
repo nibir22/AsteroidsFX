@@ -1,7 +1,6 @@
 package dk.sdu.mmmi.cbse.asteroid;
 
 import dk.sdu.mmmi.cbse.common.asteroids.Asteroid;
-import dk.sdu.mmmi.cbse.common.asteroids.IAsteroidSplitter;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
@@ -12,20 +11,27 @@ import java.util.Random;
 
 public class AsteroidProcessor implements IEntityProcessingService {
 
-    private IAsteroidSplitter asteroidSplitter = new AsteroidSplitterImpl();
+
 
     Random random = new Random();
 
     @Override
     public void process(GameData gameData, World world) {
 
+        int spawner = (int) (Math.random() * (100)-1);
+        if (spawner == 1) {
+            world.addEntity(createAsteroid(gameData));
+            System.out.println("Asteroid spawned");
+        }
+
 
         for (Entity asteroid : world.getEntities(Asteroid.class)) {
             if (asteroid.isHit() == true) {
-                Random random = new Random();
-                asteroidSplitter.createSplitAsteroid(asteroid, world);
+                if (asteroid.getType().equals("Asteroid")){
+                    splitAsteroid(asteroid, world);
+                    world.removeEntity(asteroid);
+                }
 
-                asteroidSplitter.createSplitAsteroid(asteroid, world);
 
 
                 world.removeEntity(asteroid);
@@ -75,6 +81,37 @@ public class AsteroidProcessor implements IEntityProcessingService {
         return asteroid;
     }
 
+    public void splitAsteroid(Entity asteroid, World world){
+
+        int spawnDirAngle = 25;
+
+        Entity asteroid1 = new Asteroid();
+        asteroid1.setPolygonCoordinates(-5,-5,5,-5,5,5,-5,5);
+        double asteroidX1 = Math.cos(Math.toRadians(asteroid.getRotation()+spawnDirAngle));
+        double asteroidY1 = Math.sin(Math.toRadians(asteroid.getRotation()+spawnDirAngle));
+        asteroid1.setRotation(asteroid.getRotation()+spawnDirAngle);
+        asteroid1.setX(asteroid.getX() + (asteroidX1*20));
+        asteroid1.setY(asteroid.getY() + (asteroidY1*20));
+        asteroid1.setRadius(5);
+        asteroid1.setType("SplitAsteroid");
+        world.addEntity(asteroid1);
+
+        Entity asteroid2 = new Asteroid();
+        asteroid2.setPolygonCoordinates(-5,-5,5,-5,5,5,-5,5);
+        double asteroidX2 = Math.cos(Math.toRadians(asteroid.getRotation()-spawnDirAngle));
+        double asteroidY2 = Math.sin(Math.toRadians(asteroid.getRotation()-spawnDirAngle));
+        asteroid2.setRotation(asteroid.getRotation()-spawnDirAngle);
+        asteroid2.setX(asteroid.getX() + (asteroidX2*20));
+        asteroid2.setY(asteroid.getY() + (asteroidY2*20));
+        asteroid2.setRadius(5);
+        asteroid2.setType("SplitAsteroid");
+
+
+        world.addEntity(asteroid2);
+
+
+    }
+
     public void asteroidSpawnLocation(Entity asteroid, GameData gameData) {
         int asteroidSpawnX = random.nextInt(gameData.getDisplayWidth());
         int asteroidSpawnY = random.nextInt(gameData.getDisplayHeight());
@@ -109,13 +146,7 @@ public class AsteroidProcessor implements IEntityProcessingService {
     /**
      * Dependency Injection using OSGi Declarative Services
      */
-    public void setAsteroidSplitter(IAsteroidSplitter asteroidSplitter) {
-        this.asteroidSplitter = asteroidSplitter;
-    }
 
-    public void removeAsteroidSplitter(IAsteroidSplitter asteroidSplitter) {
-        this.asteroidSplitter = null;
-    }
 
 
 }

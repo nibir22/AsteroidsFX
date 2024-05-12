@@ -16,8 +16,6 @@ public class Entity implements Serializable {
     private String type;
 
     private boolean isHit = false;
-    private double velocityX;
-    private double velocityY;
     private int health = 1;
 
     public int getHealth() {
@@ -90,14 +88,6 @@ public class Entity implements Serializable {
     public float getRadius() {
         return this.radius;
     }
-
-    public double getVelocityX() {return velocityX;}
-
-    public void setVelocityX(double velocityX) {this.velocityX = velocityX;}
-
-    public double getVelocityY() {return velocityY;}
-
-    public void setVelocityY(double velocityY) {this.velocityY = velocityY;}
 
 
 }
