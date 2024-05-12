@@ -21,14 +21,19 @@ public class AsteroidProcessor implements IEntityProcessingService {
         int spawner = (int) (Math.random() * (100)-1);
         if (spawner == 1) {
             world.addEntity(createAsteroid(gameData));
-            System.out.println("Asteroid spawned");
+            //System.out.println("Asteroid spawned");
         }
 
 
         for (Entity asteroid : world.getEntities(Asteroid.class)) {
             if (asteroid.isHit() == true) {
                 if (asteroid.getType().equals("Asteroid")){
-                    splitAsteroid(asteroid, world);
+                    int random = (int) (Math.random() * (2));
+                    if (random == 1) {
+                        splitAsteroid(asteroid, world);
+                        //System.out.println("Asteroid split and smaller spawned");
+                        world.removeEntity(asteroid);
+                    }
                     world.removeEntity(asteroid);
                 }
 

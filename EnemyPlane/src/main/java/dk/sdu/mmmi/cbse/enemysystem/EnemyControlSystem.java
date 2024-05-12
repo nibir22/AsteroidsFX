@@ -19,8 +19,8 @@ public class EnemyControlSystem implements IEntityProcessingService {
 
     @Override
     public void process(GameData gameData, World world) {
-        int Playnespawner = (int)(Math.random()*2000) -10;
-        if (Playnespawner <= 8){
+        int enemyPlaneSpawner = (int)(Math.random()*3000) -10;
+        if (enemyPlaneSpawner <= 8){
             world.addEntity(createEnemyShip(gameData));
             //System.out.println("Enemy spawned");
         }
