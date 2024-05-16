@@ -6,17 +6,13 @@ import dk.sdu.mmmi.cbse.common.data.World;
 
 
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+
 
 
 
 public class CollisionDetector implements IPostEntityProcessingService {
 
-    HttpClient client = HttpClient.newHttpClient();
+
 
 
     @Override
@@ -38,14 +34,11 @@ public class CollisionDetector implements IPostEntityProcessingService {
                     boolean scoreUpdated = false;
                     if (entity1.getType().equals("Asteroid") && entity2.getType().equals("Bullet")){
 
-                        scoreadd = 10;
-                        scoreUpdated = true;
                         //System.out.println("Asteroid hit by bullet");
                     } else {
                         if (entity1.getType().equals("Bullet") && entity2.getType().equals("SplitAsteroid")){
 
-                            scoreadd = 5;
-                            scoreUpdated = true;
+
                             //System.out.println("SplitAsteroid hit by bullet");
                         }
                     }
@@ -78,20 +71,7 @@ public class CollisionDetector implements IPostEntityProcessingService {
                     System.out.println(entity1.isHit() + " " + entity2.isHit());
                      */
 
-                    //Microservice
-                    if (scoreUpdated){
-                        HttpRequest request = HttpRequest.newBuilder()
-                                .uri(URI.create("http://localhost:8080/score/update/" + scoreadd))
-                                .PUT(HttpRequest.BodyPublishers.ofString(""))
-                                .build();
-                        try {
-                            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                            System.out.println(response.body());
-                        } catch (IOException | InterruptedException e) {
-                            e.printStackTrace();
 
-                        }
-                    }
                 }
 
 

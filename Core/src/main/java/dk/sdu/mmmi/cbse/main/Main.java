@@ -52,8 +52,7 @@ public class Main extends Application {
         VBox vBox = new VBox(5,scoreText);
         gameWindow.getChildren().add(vBox);
 
-        //Timer for update on score
-        timer.scheduleAtFixedRate(task,0, 1000);
+
 
 
 
@@ -168,31 +167,6 @@ public class Main extends Application {
 
     }
 
-    //Timer for updating score
-    Timer timer = new Timer();
-    TimerTask task = new TimerTask() {
-        @Override
-        public void run() {
-            updateScoreText();
-
-        }
-    };
-
-        //Method for updating score
-    private void updateScoreText() {
-        System.out.println();
-        HttpClient httpClient = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/score"))
-                .GET().build();
-
-        try {
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            scoreText.setText("Score: " + response.body());
-        } catch (IOException | InterruptedException exception) {
-            exception.printStackTrace();
-        }
-    }
 
 
 
