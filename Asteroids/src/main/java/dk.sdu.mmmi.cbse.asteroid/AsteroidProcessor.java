@@ -27,15 +27,22 @@ public class AsteroidProcessor implements IEntityProcessingService {
 
         for (Entity asteroid : world.getEntities(Asteroid.class)) {
             if (asteroid.isHit() == true) {
-                
+
+                //Randomiser for wheter spawn smaller or not
+
                 if (asteroid.getType().equals("Asteroid")){
-                    int random = (int) (Math.random()*200) -10;
-                    if (random <= 1) {
+                    /*
+                    int random = (int) (Math.random() * (2));
+                    if (random == 1) {
                         splitAsteroid(asteroid, world);
                         //System.out.println("Asteroid split and smaller spawned");
                         world.removeEntity(asteroid);
                     }
                     world.removeEntity(asteroid);
+
+                     */
+                    splitAsteroid(asteroid, world);
+
                 }
 
 
